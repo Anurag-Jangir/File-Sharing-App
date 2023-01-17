@@ -39,9 +39,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 app.route("/file/:id").get(handleDownload).post(handleDownload);
 
 async function handleDownload(req, res) {
-  console.log("lets check:req.body.password ", req.body.password);
   const file = await File.findById(req.params.id);
-  console.log("lets check:file.password ", file.password);
 
   if (file.password != null) {
     if (req.body.password == null) {
