@@ -29,19 +29,29 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   if (req.body.password != null && req.body.password !== "")
     fileData.password = await bcrypt.hash(req.body.password, 10);
 
-  const file = new File(fileData);
-  file.save().then((doc) => {
-    console.log("Saved: ", doc);
-  });
+  //   const file = new File(fileData);
+  //   file.save().then((doc) => {
+  //     console.log("Saved: ", doc);
+  //   });
+
+  // OR
+
+  //   const file = new File(fileData);
+  //   await file.save();
+  //   console.log(file);
+
+  // OR
+
+  const file = await File.create(fileData);
+  console.log(file);
+
   res.render("index", { fileLink: `${req.headers.origin}/file/${file.id}` });
 });
 
 app.route("/file/:id").get(handleDownload).post(handleDownload);
 
 async function handleDownload(req, res) {
-  console.log("lets check:req.body.password ", req.body.password);
   const file = await File.findById(req.params.id);
-  console.log("lets check:file.password ", file.password);
 
   if (file.password != null) {
     if (req.body.password == null) {
